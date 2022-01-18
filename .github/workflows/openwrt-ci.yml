@@ -57,6 +57,18 @@ jobs:
           # ln -s /mnt/openwrt/staging_dir ./staging_dir
 
           df -h
+          
+      - name: 自定义插件主题
+        run: |
+          cd package
+          mkdir openwrt-packages
+          cd openwrt-packages
+          git clone https://github.com/xiaorouji/openwrt-passwall.git
+          git clone https://github.com/jerrykuku/luci-theme-argon.git
+          git clone https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
+          git clone https://github.com/uamrws/luci-app-adguardhome.git
+          git clone https://github.com/jerrykuku/luci-app-argon-config.git
+          git clone https://github.com/vernesong/OpenClash.git
 
       - name: Update feeds
         run: |
@@ -73,9 +85,211 @@ jobs:
           # 例如:
 
           cat >> .config <<EOF
+          #CONFIG_TARGET_IMAGES_GZIP=y
+          #CONFIG_KERNEL_BUILD_USER="OpenWrt-CI"
+          #CONFIG_KERNEL_BUILD_DOMAIN="Azure"
+          CONFIG_KERNEL_BUILD_USER="charles_lu Playground"
+          CONFIG_GRUB_TITLE="OpenWrt AutoBuild by charles_luPlayground"
+
+          # Target Config
+          CONFIG_TARGET_x86=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_Generic=y
+          CONFIG_TARGET_ROOTFS_TARGZ=y
+          CONFIG_TARGET_ROOTFS_SQUASHFS=y
+          CONFIG_TARGET_KERNEL_PARTSIZE=256
+          CONFIG_TARGET_ROOTFS_PARTSIZE=512
           CONFIG_TARGET_IMAGES_GZIP=y
-          CONFIG_KERNEL_BUILD_USER="OpenWrt-CI"
-          CONFIG_KERNEL_BUILD_DOMAIN="Azure"
+          CONFIG_EFI_IMAGES=y
+
+          # Kmods
+          # Display & Extra Drivers
+          CONFIG_PACKAGE_kmod-backlight=y
+          CONFIG_PACKAGE_kmod-backlight-pwm=y
+          CONFIG_PACKAGE_kmod-drm=y
+          CONFIG_PACKAGE_kmod-drm-amdgpu=y
+          CONFIG_PACKAGE_kmod-drm-kms-helper=y
+          CONFIG_PACKAGE_kmod-drm-radeon=y
+          CONFIG_PACKAGE_kmod-drm-ttm=y
+          CONFIG_PACKAGE_kmod-fb=y
+          CONFIG_PACKAGE_kmod-fb-cfb-copyarea=y
+          CONFIG_PACKAGE_kmod-fb-cfb-fillrect=y
+          CONFIG_PACKAGE_kmod-fb-cfb-imgblt=y
+          CONFIG_PACKAGE_kmod-fb-sys-fops=y
+          CONFIG_PACKAGE_kmod-fb-sys-ram=y
+          CONFIG_PACKAGE_kmod-video-pwc=y
+          CONFIG_PACKAGE_kmod-video-uvc=y
+          CONFIG_PACKAGE_kmod-video-videobuf2=y
+
+          ### Virtualization
+          CONFIG_PACKAGE_kmod-kvm-amd=y
+          CONFIG_PACKAGE_kmod-kvm-intel=y
+          CONFIG_PACKAGE_kmod-kvm-x86=y
+
+          ### USB Suppport
+          CONFIG_PACKAGE_kmod-usb-acm=y
+          CONFIG_PACKAGE_kmod-usb-ehci=y
+          CONFIG_PACKAGE_kmod-usb-wdm=y
+
+          ### USB Storage Drivers
+          CONFIG_PACKAGE_kmod-usb-ohci=y
+          CONFIG_PACKAGE_kmod-usb-ohci-pci=y
+          CONFIG_PACKAGE_kmod-usb-printer=y
+          CONFIG_PACKAGE_kmod-usb-storage=y
+          CONFIG_PACKAGE_kmod-usb-storage-extras=y
+          CONFIG_PACKAGE_kmod-usb-storage-uas=y
+          CONFIG_PACKAGE_kmod-usb-uhci=y
+          CONFIG_PACKAGE_kmod-usb2=y
+          CONFIG_PACKAGE_kmod-usb2-pci=y
+          CONFIG_PACKAGE_kmod-usb3=y
+
+          # System Utilities
+          CONFIG_PACKAGE_acl=y
+          CONFIG_PACKAGE_btrfs-progs=y
+          CONFIG_PACKAGE_e2fsprogs=y
+          CONFIG_PACKAGE_htop=y
+          CONFIG_PACKAGE_mkf2fs=y
+          CONFIG_PACKAGE_nfs-utils-libs=y
+          CONFIG_PACKAGE_NTFS-3G_HAS_PROBE=y
+          CONFIG_PACKAGE_ntfs-3g=y
+          CONFIG_PACKAGE_pciutils=y
+          CONFIG_PACKAGE_squashfs-tools-mksquashfs=y
+          CONFIG_PACKAGE_squashfs-tools-unsquashfs=y
+          CONFIG_PACKAGE_swap-utils=y
+          CONFIG_PACKAGE_sysfsutils=y
+          CONFIG_SQUASHFS_TOOLS_LZ4_SUPPORT=y
+          CONFIG_SQUASHFS_TOOLS_LZO_SUPPORT=y
+          CONFIG_SQUASHFS_TOOLS_XZ_SUPPORT=y
+
+          ## File System Drivers
+          CONFIG_PACKAGE_kmod-fs-f2fs=y
+          CONFIG_PACKAGE_kmod-fs-nfs=y
+          CONFIG_PACKAGE_kmod-fs-nfs-common=y
+          CONFIG_PACKAGE_kmod-fs-nfs-common-rpcsec=y
+          CONFIG_PACKAGE_kmod-fs-nfs-v3=y
+          CONFIG_PACKAGE_kmod-fs-nfs-v4=y
+          CONFIG_PACKAGE_kmod-fs-nfsd=y
+          CONFIG_PACKAGE_kmod-fs-squashfs=y
+          CONFIG_PACKAGE_kmod-fs-xfs=y
+
+          # LuCI APPs
+          CONFIG_PACKAGE_luci-app-accesscontrol=y
+          CONFIG_PACKAGE_luci-app-autoreboot=y
+          CONFIG_PACKAGE_luci-app-firewall=y
+          CONFIG_PACKAGE_luci-app-ramfree=y
+          CONFIG_PACKAGE_luci-app-upnp=y
+          CONFIG_PACKAGE_luci-app-vlmcsd=y
+          CONFIG_PACKAGE_luci-app-vsftpd=y
+          CONFIG_PACKAGE_luci-app-wol=y
+          CONFIG_PACKAGE_luci-app-adguardhome=y
+          CONFIG_PACKAGE_luci-app-adguardhome_INCLUDE_binary=n
+          CONFIG_PACKAGE_luci-app-adbyby-plus=y
+          CONFIG_PACKAGE_luci-app-argon-config=y
+          CONFIG_PACKAGE_luci-theme-argon=y
+          CONFIG_PACKAGE_luci-app-arpbind=y
+          CONFIG_PACKAGE_luci-app-cifs-mount=y
+          CONFIG_PACKAGE_luci-app-cifsd=y
+          CONFIG_PACKAGE_luci-app-commands=y
+          CONFIG_PACKAGE_luci-app-ddns=y
+          CONFIG_PACKAGE_luci-app-diskman=y
+          CONFIG_PACKAGE_luci-app-diskman_INCLUDE_btrfs_progs=y
+          CONFIG_PACKAGE_luci-app-diskman_INCLUDE_lsblk=y
+          CONFIG_PACKAGE_luci-app-diskman_INCLUDE_mdadm=y
+          CONFIG_PACKAGE_luci-app-filetransfer=y
+          CONFIG_PACKAGE_luci-app-frpc=y
+          CONFIG_PACKAGE_luci-app-ipsec-server=y
+          CONFIG_PACKAGE_luci-app-ipsec-vpnd=n
+          CONFIG_PACKAGE_luci-app-netdata=y
+          CONFIG_PACKAGE_luci-app-nlbwmon=n
+          CONFIG_PACKAGE_luci-app-openclash=y
+          CONFIG_PACKAGE_luci-app-unblockneteasemusic=y
+          #CONFIG_PACKAGE_luci-app-unblockmusic=y
+          CONFIG_PACKAGE_luci-app-samba=y
+          CONFIG_PACKAGE_luci-app-serverchan=y
+          CONFIG_PACKAGE_luci-app-sqm=y
+          CONFIG_PACKAGE_luci-app-turboacc=y
+          CONFIG_PACKAGE_TURBOACC_INCLUDE_BBR_CCA=y
+          CONFIG_PACKAGE_TURBOACC_INCLUDE_DNSFORWARDER=y
+          CONFIG_PACKAGE_TURBOACC_INCLUDE_DNSPROXY=y
+          CONFIG_PACKAGE_TURBOACC_INCLUDE_OFFLOADING=y
+          CONFIG_PACKAGE_TURBOACC_INCLUDE_SHORTCUT_FE=n
+          CONFIG_PACKAGE_luci-app-ttyd=y
+          CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
+          CONFIG_PACKAGE_luci-app-watchcat=y
+          CONFIG_PACKAGE_luci-app-webadmin=y
+          CONFIG_PACKAGE_luci-i18n-webadmin-zh-cn=y
+          CONFIG_PACKAGE_luci-app-wrtbwmon=y
+          CONFIG_PACKAGE_luci-app-zerotier=y
+          CONFIG_PACKAGE_luci-app-go-aliyundrive-webdav=y
+          #CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
+
+          # passwall
+          CONFIG_PACKAGE_luci-app-passwall=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Brook=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ChinaDNS_NG=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Kcptun=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_PDNSD=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Client=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Server=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Server=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_GO=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
+          CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin=y
+
+          CONFIG_PACKAGE_dnsmasq_full_auth=y
+          CONFIG_PACKAGE_dnsmasq_full_conntrack=y
+          CONFIG_PACKAGE_dnsmasq_full_dnssec=y
+
+          # Network Tools
+          CONFIG_PACKAGE_ariang=y
+          CONFIG_PACKAGE_bind-dig=y
+          CONFIG_PACKAGE_bind-host=y
+          CONFIG_PACKAGE_bind-client=y
+          CONFIG_PACKAGE_coremark=y
+          CONFIG_PACKAGE_ddns-scripts=y
+          CONFIG_PACKAGE_ddns-scripts_aliyun=y
+          CONFIG_PACKAGE_ddns-scripts_cloudflare.com-v4=y
+          CONFIG_PACKAGE_ddns-scripts_cnkuai_cn=y
+          CONFIG_PACKAGE_ddns-scripts_digitalocean.com-v2=y
+          CONFIG_PACKAGE_ddns-scripts_dnspod=y
+          CONFIG_PACKAGE_ddns-scripts_freedns_42_pl=y
+          CONFIG_PACKAGE_ddns-scripts_godaddy.com-v1=y
+          CONFIG_PACKAGE_ddns-scripts_no-ip_com=y
+          CONFIG_PACKAGE_ddns-scripts_nsupdate=y
+          CONFIG_PACKAGE_ddns-scripts_route53-v1=y
+          CONFIG_PACKAGE_iperf=y
+          CONFIG_PACKAGE_openssh-sftp-client=y
+          CONFIG_PACKAGE_openssh-sftp-server=y
+          CONFIG_PACKAGE_ppp-mod-pptp=y
+          CONFIG_PACKAGE_rsync=y
+          CONFIG_PACKAGE_rsyncd=y
+          CONFIG_PACKAGE_xl2tpd=y
+
+          CONFIG_PACKAGE_curl=y
+          CONFIG_PACKAGE_nano=y
+          CONFIG_PACKAGE_wget=y
+
+          # ssr-plus
+          #CONFIG_PACKAGE_luci-app-ssr-plus=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray_plugin=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Xray=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Redsocks2=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_NaiveProxy=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Kcptun=y
+          #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Server=y
+          #CONFIG_PACKAGE_luci-i18n-ssr-plus-zh-cn=y
           EOF
 
           #
