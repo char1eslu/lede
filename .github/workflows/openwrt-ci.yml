@@ -58,7 +58,7 @@ jobs:
 
           df -h
           
-      - name: 自定义插件主题
+      - name: Custom plug-ins and themes
         run: |
           cd package
           mkdir openwrt-packages
@@ -74,6 +74,15 @@ jobs:
         run: |
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          
+      - name: Custom after update feeds
+        run: |
+          # Modify default IP
+          sed -i 's/192.168.1.1/192.168.50.222/g' package/base-files/files/bin/config_generate
+          #2. Clear the login password
+          #sed -i 's/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.//g' openwrt/package/lean/default-settings/files/zzz-default-settings
+          #3. Replace with JerryKuKu’s Argon
+          rm openwrt/package/lean/luci-theme-argon -rf
 
       - name: Generate configuration file
         run: |
@@ -90,7 +99,6 @@ jobs:
           #CONFIG_KERNEL_BUILD_DOMAIN="Azure"
           CONFIG_KERNEL_BUILD_USER="charles_lu Playground"
           CONFIG_GRUB_TITLE="OpenWrt AutoBuild by charles_luPlayground"
-
           # Target Config
           CONFIG_TARGET_x86=y
           CONFIG_TARGET_x86_64=y
@@ -101,7 +109,6 @@ jobs:
           CONFIG_TARGET_ROOTFS_PARTSIZE=512
           CONFIG_TARGET_IMAGES_GZIP=y
           CONFIG_EFI_IMAGES=y
-
           # Kmods
           # Display & Extra Drivers
           CONFIG_PACKAGE_kmod-backlight=y
@@ -120,17 +127,14 @@ jobs:
           CONFIG_PACKAGE_kmod-video-pwc=y
           CONFIG_PACKAGE_kmod-video-uvc=y
           CONFIG_PACKAGE_kmod-video-videobuf2=y
-
           ### Virtualization
           CONFIG_PACKAGE_kmod-kvm-amd=y
           CONFIG_PACKAGE_kmod-kvm-intel=y
           CONFIG_PACKAGE_kmod-kvm-x86=y
-
           ### USB Suppport
           CONFIG_PACKAGE_kmod-usb-acm=y
           CONFIG_PACKAGE_kmod-usb-ehci=y
           CONFIG_PACKAGE_kmod-usb-wdm=y
-
           ### USB Storage Drivers
           CONFIG_PACKAGE_kmod-usb-ohci=y
           CONFIG_PACKAGE_kmod-usb-ohci-pci=y
@@ -142,7 +146,6 @@ jobs:
           CONFIG_PACKAGE_kmod-usb2=y
           CONFIG_PACKAGE_kmod-usb2-pci=y
           CONFIG_PACKAGE_kmod-usb3=y
-
           # System Utilities
           CONFIG_PACKAGE_acl=y
           CONFIG_PACKAGE_btrfs-progs=y
@@ -160,7 +163,6 @@ jobs:
           CONFIG_SQUASHFS_TOOLS_LZ4_SUPPORT=y
           CONFIG_SQUASHFS_TOOLS_LZO_SUPPORT=y
           CONFIG_SQUASHFS_TOOLS_XZ_SUPPORT=y
-
           ## File System Drivers
           CONFIG_PACKAGE_kmod-fs-f2fs=y
           CONFIG_PACKAGE_kmod-fs-nfs=y
@@ -171,7 +173,6 @@ jobs:
           CONFIG_PACKAGE_kmod-fs-nfsd=y
           CONFIG_PACKAGE_kmod-fs-squashfs=y
           CONFIG_PACKAGE_kmod-fs-xfs=y
-
           # LuCI APPs
           CONFIG_PACKAGE_luci-app-accesscontrol=y
           CONFIG_PACKAGE_luci-app-autoreboot=y
@@ -222,7 +223,6 @@ jobs:
           CONFIG_PACKAGE_luci-app-zerotier=y
           CONFIG_PACKAGE_luci-app-go-aliyundrive-webdav=y
           #CONFIG_PACKAGE_luci-app-aliyundrive-webdav=y
-
           # passwall
           CONFIG_PACKAGE_luci-app-passwall=y
           CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Brook=y
@@ -244,11 +244,9 @@ jobs:
           CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin=y
           CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray=y
           CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin=y
-
           CONFIG_PACKAGE_dnsmasq_full_auth=y
           CONFIG_PACKAGE_dnsmasq_full_conntrack=y
           CONFIG_PACKAGE_dnsmasq_full_dnssec=y
-
           # Network Tools
           CONFIG_PACKAGE_ariang=y
           CONFIG_PACKAGE_bind-dig=y
@@ -273,11 +271,9 @@ jobs:
           CONFIG_PACKAGE_rsync=y
           CONFIG_PACKAGE_rsyncd=y
           CONFIG_PACKAGE_xl2tpd=y
-
           CONFIG_PACKAGE_curl=y
           CONFIG_PACKAGE_nano=y
           CONFIG_PACKAGE_wget=y
-
           # ssr-plus
           #CONFIG_PACKAGE_luci-app-ssr-plus=y
           #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks=y
@@ -291,7 +287,7 @@ jobs:
           #CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Server=y
           #CONFIG_PACKAGE_luci-i18n-ssr-plus-zh-cn=y
           EOF
-
+          
           #
           # ===============================================================
           # 
